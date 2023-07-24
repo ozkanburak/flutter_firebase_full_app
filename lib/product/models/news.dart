@@ -6,6 +6,7 @@ class News extends Equatable with IdModel, BaseFirebaseModel<News>{
   final String? categoryId;
   final String? title;
   final String? backgroundImage;
+  @override
   final String? id;
 
   News({

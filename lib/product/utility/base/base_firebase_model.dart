@@ -1,12 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-abstract class IdModel {
+mixin class IdModel {
   String? id;
 }
 
-abstract class BaseFirebaseModel<T extends IdModel>  {
+mixin class BaseFirebaseModel<T extends IdModel>  {
 
-T fromJson(Map<String, dynamic> json);
+// T fromJson(Map<String, dynamic> json);
+
+T fromJson(Map<String, dynamic> json) {
+  // TODO: implement fromJson
+  throw UnimplementedError();
+}
 
 T? fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot){
   final value = snapshot.data();

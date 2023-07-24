@@ -13,7 +13,23 @@ class _HomeViewState extends State<HomeView>{
 
   @override
   Widget build(BuildContext context){
-    CollectionReference news = FirebaseFirestore.instance.collection('news');
+   
+
+    return Scaffold(
+      appBar: AppBar(),
+      body: _HomeListView()
+      );
+  }
+}
+
+class _HomeListView extends StatelessWidget {
+  const _HomeListView();
+
+
+
+  @override
+  Widget build(BuildContext context) {
+     CollectionReference news = FirebaseFirestore.instance.collection('news');
     final response = news.withConverter(fromFirestore: (snapshot, options) {
       return News().fromFirestore(snapshot);
     }, 
@@ -24,48 +40,45 @@ class _HomeViewState extends State<HomeView>{
       },
     ).get();
 
-    return Scaffold(
-      appBar: AppBar(),
-      body: FutureBuilder(
-        future: response,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<News?>> snapshot) {
-          switch(snapshot.connectionState){
-            
-            case ConnectionState.none:
-            return const Placeholder();
-            case ConnectionState.waiting:
-            case ConnectionState.active:
-            return LinearProgressIndicator();
-            case ConnectionState.done:
-              // TODO: Handle this case.
-              if(snapshot.hasData){
-                final values = snapshot.data!.docs.map((e) => e.data()).toList();
-                return ListView.builder(
-                  itemCount: values.length,
-                  itemBuilder: (BuildContext context, int index){
-                    return Card(
-                      child: Column(
-                        children: [
-                          Image.network(values[index]?.backgroundImage ?? '',
-                          height: context.dynamicHeight(.1),
-                          ),
-                          Text(
-                            values[index]?.title ?? '', 
-                            style: context.textTheme.labelLarge ,)
-                        ],
-                      ),
-                    );
-                  }
+    return FutureBuilder(
+      future: response,
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<News?>> snapshot) {
+        switch(snapshot.connectionState){  
+
+          case ConnectionState.none:
+          return const Placeholder();
+          case ConnectionState.waiting:
+          case ConnectionState.active:
+          return LinearProgressIndicator();
+          case ConnectionState.done:
+          
+            // TODO: Handle this case.
+            if(snapshot.hasData){
+              final values = snapshot.data!.docs.map((e) => e.data()).toList();
+              return ListView.builder(
+                itemCount: values.length,
+                itemBuilder: (BuildContext context, int index){
+                  return Card(
+                    child: Column(
+                      children: [
+                        Image.network(values[index]?.backgroundImage ?? '',
+                        height: context.dynamicHeight(.1),
+                        ),
+                        Text(
+                          values[index]?.title ?? '', 
+                          style: context.textTheme.labelLarge ,)
+                      ],
+                    ),
                   );
-                  
+                }
+                );
+            }
+            else{
+              return const SizedBox();
+            }
+        }
 
-              }
-              else{
-                return const SizedBox();
-              }
-          }
-
-        },
-    ));
+      },
+    );
   }
 }
