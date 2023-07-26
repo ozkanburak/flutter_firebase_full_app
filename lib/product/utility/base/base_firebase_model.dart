@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_firebase_full_app/product/utility/exception/custom_exceptions.dart';
 
 mixin class IdModel {
   String? id;
@@ -13,10 +14,10 @@ T fromJson(Map<String, dynamic> json) {
   throw UnimplementedError();
 }
 
-T? fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot){
+T fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot){
   final value = snapshot.data();
   if(value == null){
-    return null;
+    throw FirebaseCustomExcepiton('$snapshot data is null');
   }
   value.addEntries([MapEntry('id', snapshot.id)]);
   return fromJson(value);
